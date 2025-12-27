@@ -13,6 +13,9 @@ ennuste.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion sii
 
 ennuste2.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tilastolliseen analyysiin.
 
-ennuste3.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tekoälyyn. Kirjoittaa uuden csv-tiedoston.
+ennuste3.py: tekee vanhaan mittausdataan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tekoälyyn. Kirjoittaa uuden csv-tiedoston.
+
+ennuste4.py: tekee vanhaan mittausdataan ja sähkön markkinahintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tekoälyyn. Kirjoittaa uuden csv-tiedoston.
 
  
+
