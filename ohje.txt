@@ -1,0 +1,18 @@
+mittaus.py:
+hakee tietokoneen akun virrankulutuksen tiedot html tiedostosta ja tallentaa sen csv -tiedostoon.
+
+mittaus2.py:
+toinen tapa hakea tietokoneen akun virrankulutuksen tiedot html tiedostosta ja tallentaa sen csv -tiedostoon.
+
+
+laskenta.py: pyytää syötteenä kulutuksen ja laskee sähkönkulutukselle hinnan ottaen mukaan kulutuksen, siirron,
+kiinteät kuukausimaksut, sähköveron, huoltovarmuusmaksun, marginaalin ja arvonlisäveron. Piirtää kuvaajan, jossa on esitetty sähköpörssin markkinahinta, kuluttajahinta ja loppukäyttäjän kulutuksen hinta 15 min välein ja tallentaa tiedot uuteen csv-tiedostoon. Loppuhinta kattaa myös siirron, joka ei ole erillisenä csv-kenttänä.
+
+
+ennuste.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen lineaariseen malliin.
+
+ennuste2.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tilastolliseen analyysiin.
+
+ennuste3.py: tekee vanhaan mittausdataan ja sähkön hintaan perustuen arvion siitä, paljonko sähkönkulutuksen hinta on 1kk päästä perustuen tekoälyyn. Kirjoittaa uuden csv-tiedoston.
+
+ 
