@@ -4,10 +4,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
-import csv
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+import warnings
+
+plt.figure(figsize=(12,6))
+# Hiljennetään FutureWarning Kerasista
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # =================================================
 # 1) Lataa CSV-historia
@@ -16,6 +20,7 @@ home_dir = os.path.expanduser("~")
 csv_file = os.path.join(home_dir, "battery_energy_summary.csv")
 df = pd.read_csv(csv_file)
 
+# Muunna timestamp ja energia
 df["Timestamp"] = pd.to_datetime(df["Timestamp"])
 df["Energy_kWh"] = pd.to_numeric(df["TotalEnergy_kWh"], errors='coerce')
 df = df.dropna(subset=["Energy_kWh"])
@@ -23,6 +28,7 @@ df = df.dropna(subset=["Energy_kWh"])
 if len(df) == 0:
     raise ValueError("CSV ei sisällä yhtään kelvollista datapistettä.")
 
+# Päivitä tasolle
 daily_data = df.groupby(pd.Grouper(key="Timestamp", freq="D"))["Energy_kWh"].mean().reset_index()
 daily_data.rename(columns={"Energy_kWh":"SpotPrice"}, inplace=True)
 
@@ -43,11 +49,17 @@ try:
     price_df.rename(columns={"value":"Price_snt_per_kWh"}, inplace=True)
     price_df["Price_EUR_per_kWh"] = price_df["Price_snt_per_kWh"] / 100  # sentit → eurot
 
-    # Keskiarvota tuntihinnat päivätasolle
+    # Päivätason keskiarvo
     daily_api = price_df.groupby(price_df["date"].dt.floor("D"))["Price_EUR_per_kWh"].mean().reset_index()
     daily_api.rename(columns={"date":"Timestamp","Price_EUR_per_kWh":"SpotPrice"}, inplace=True)
 
-    # Yhdistä CSV-historia ja API-data
+    # =================================================
+    # 3) Muunna tz-naive molemmille
+    # =================================================
+    daily_data["Timestamp"] = pd.to_datetime(daily_data["Timestamp"]).dt.tz_localize(None)
+    daily_api["Timestamp"] = pd.to_datetime(daily_api["Timestamp"]).dt.tz_localize(None)
+
+    # Yhdistä CSV ja API
     combined_data = pd.concat([daily_data, daily_api])
     combined_data = combined_data.groupby("Timestamp").mean().reset_index()
     combined_data.sort_values("Timestamp", inplace=True)
@@ -58,6 +70,12 @@ try:
 except Exception as e:
     print(f"Nykyhinnan haku epäonnistui: {e}")
     print("Käytetään pelkkää CSV-historiaa LSTM:ään.")
+
+# =================================================
+# 4) Tässä vaiheessa daily_data on valmis LSTM:ään
+# =================================================
+print(daily_data.head())
+
 
 # =================================================
 # 3) Parametrit ja skaalaus
@@ -115,6 +133,7 @@ future_dates = [last_date + timedelta(days=i+1) for i in range(future_days)]
 # =================================================
 # 6) Piirrä graafi
 # =================================================
+import matplotlib.pyplot as plt
 plt.figure(figsize=(12,6))
 plt.plot(daily_data["Timestamp"], daily_data["SpotPrice"], label="Historiallinen spot-hinta €/kWh", color="blue", marker="o")
 plt.plot(future_dates, predicted_values, label="AI-ennuste spot-hinta €/kWh", color="cyan", marker="x")
