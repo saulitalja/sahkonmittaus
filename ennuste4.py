@@ -1,4 +1,5 @@
 import os
+import csv
 import requests
 import pandas as pd
 import numpy as np
@@ -158,3 +159,4 @@ with open(output_csv, "w", newline="", encoding="utf-8") as f:
         writer.writerow([d,val,price])
 
 print(f"Ennuste CSV: {output_csv}")
+
